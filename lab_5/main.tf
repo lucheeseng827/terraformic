@@ -1,5 +1,5 @@
 provider "docker" {
-    host = "tcp://192.168.50.130:2376/"
+    host = "tcp://192.168.150.139:2376/"
 
 }
 
@@ -11,7 +11,3 @@ resource "docker_container" "flask" {
 resource "docker_image" "ubuntu" {
     name = "ubuntu:latest"
 }
-
-
-#more on registry credential
-
