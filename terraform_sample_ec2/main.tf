@@ -9,7 +9,7 @@ variable "instance_count" {
 }
 
 variable "instance_tags" {
-  type = list
+  type    = list
   default = ["Terraform-1", "Terraform-2"]
 }
 
@@ -29,16 +29,21 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"] # Canonical
 }
 
+data "aws_s3_bucket_object" "bootstrap_script" {
+  bucket = "ourcorp-deploy-config"
+  key    = "ec2-bootstrap-script.sh"
+}
+
 resource "aws_instance" "web" {
-  count         = var.instance_count 
+  count         = var.instance_count
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t3.micro"
-  user_data = "#!/bin/bash\nsudo apt-get update"
+  user_data     = data.aws_s3_bucket_object.bootstrap_script.body
 
   tags = {
-    Name  = "Server-${count.index}"
-    type  = "${var.instance_tags[0]}"
+    Name = "Server-${count.index}"
+    type = "${var.instance_tags[0]}"
   }
 
-  }
-  
+}
+
